@@ -29,12 +29,14 @@ module CU(
     output reg        jalr_src,      
     output reg        branch,
     output reg        jump,
-    output reg [1:0]  alu_op         
+    output reg [1:0]  alu_op,
+    output reg        auipc_sel
 );
 
     always @(*) begin
         reg_write = 0; mem_read = 0; mem_write = 0; alu_src = 0;
         mem_to_reg = 2'b00; jalr_src = 0; branch = 0; jump = 0; alu_op = 2'b00;
+        auipc_sel = 0;
 
         case(opcode)
             7'b0110011: begin 
@@ -68,18 +70,21 @@ module CU(
             7'b1100111: begin
                 reg_write  = 1;
                 jump       = 1;
-                jalr_src   = 1;     
-                mem_to_reg = 2'b10; 
+                jalr_src   = 1;
+                alu_src    = 1;    // add this line
+                mem_to_reg = 2'b10;
             end
             7'b0110111: begin 
                 reg_write  = 1;
                 mem_to_reg = 2'b11; 
             end
-            7'b0010111: begin
-                reg_write  = 1'b1;
-                mem_to_reg = 2'b00;
-                alu_op     = 2'b00;  
-            end
+               7'b0010111: begin
+        reg_write  = 1'b1;
+        alu_src    = 1'b1;   // select imm as ALU operand B
+        auipc_sel  = 1'b1;   // route PC (not rs1) into ALU operand A
+        mem_to_reg = 2'b00;  // ALU result -> rd (PC + U-imm)
+        alu_op     = 2'b00;  // ADD
+    end
 
             7'b0001111, 7'b1110011: begin
                 reg_write  = 1'b0;
