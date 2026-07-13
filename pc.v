@@ -33,3 +33,4 @@ output reg [31:0] pc
             pc <= nextpc;
     end
 endmodule
+ 
