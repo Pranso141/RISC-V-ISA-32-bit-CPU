@@ -29,20 +29,28 @@ output reg [3:0] operation
     wire [5:0] check = {aluop , funct3 , b30};
     
     always @ (*) begin
-        casex (check) 
-        6'b00xxxx: operation = 4'b0010;
-        6'b01xxxx: operation = 4'b0110;
+        casez (check) 
+        6'b00zzzz: operation = 4'b0010;
+        6'b01zzzz: operation = 4'b0110;
         6'b100000: operation = 4'b0010;
         6'b100001: operation = 4'b0110;
-        6'b1x0010: operation = 4'b0011;
-        6'b1x010x: operation = 4'b0111;
-        6'b1x011x: operation = 4'b1000;
-        6'b1x100x: operation = 4'b0100;
-        6'b1x1010: operation = 4'b0101;
-        6'b1x1011: operation = 4'b1101;
-        6'b1x110x: operation = 4'b0001;
-        6'b1x111x: operation = 4'b0000;
-        6'b11000x: operation = 4'b0010;
+        6'b1z0010: operation = 4'b0011;
+        6'b1z010z: operation = 4'b0111;
+        6'b1z011z: operation = 4'b1000;
+        6'b1z100z: operation = 4'b0100;
+        6'b1z1010: operation = 4'b0101;
+        6'b1z1011: operation = 4'b1101;
+        6'b1z110z: operation = 4'b0001;
+        6'b1z111z: operation = 4'b0000;
+        6'b11000z: operation = 4'b0010; // ADDI (bit30 here is imm[10], not funct7 - ignore it)
+        6'b110010: operation = 4'b0011; // SLLI
+        6'b110100: operation = 4'b0111; // SLTI
+        6'b110110: operation = 4'b1000; // SLTIU
+        6'b111000: operation = 4'b0100; // XORI
+        6'b111010: operation = 4'b0101; // SRLI
+        6'b111011: operation = 4'b1101; // SRAI
+        6'b111100: operation = 4'b0001; // ORI
+        6'b111110: operation = 4'b0000; // ANDI
         default:   operation = 4'b0000;
         endcase
     end
