@@ -35,13 +35,7 @@ module imm_gen(
             7'b1101111: out <=  {{11{instruct[31]}},instruct[31],instruct[19:12],instruct[20],instruct[30:21],1'b0};
             7'b0001111: out <=  {{20{instruct[31]}},instruct[31:20]};
             7'b1110011: out <=  {{32{1'b0}}};
-            default:    out <=  32'b0;
-            
-            
-            
-            endcase
-    
-    
-    end
-    
+            default:    out <=  32'b0;           
+            endcase 
+    end  
 endmodule
