@@ -22,7 +22,8 @@ The top-level module (`top_module.v`) connects the individual functional blocks 
 ### RTL Schematic
 Below is the generated schematic of the single-cycle datapath:
 
-![RTL Schematic](images/Schematic.PNG)
+![RTL Schematic](images/Schematic.png
+)
 
 ### Module Breakdown
 *   **`top_module.v`**: The structural wrapper that instantiates and wires all datapath components and control lines together.
@@ -43,14 +44,14 @@ The processor's functionality has been verified using a self-checking testbench 
 
 Below are the simulation waveforms demonstrating correct execution:
 
-![Simulation Results](images/Simulation_Results.PNG)
+![Simulation Results](images/Simulation_Results.png)
 
 ## Synthesis Utilization
 The design has been synthesized to analyze logic block and register resource consumption. 
 
 Below is the utilization report for the single-cycle implementation:
 
-![Resource Utilization](images/Utilization.PNG)
+![Resource Utilization](images/Utilization.png)
 
 ## Future Roadmap
 This single-cycle implementation is phase one of a larger VLSI development cycle. Upcoming milestones include:
