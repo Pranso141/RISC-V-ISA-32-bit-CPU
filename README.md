@@ -46,7 +46,7 @@ The processor's functionality has been verified using a self-checking testbench 
 
 Below are the simulation waveforms demonstrating correct execution:
 
-![Simulation Results](images/Simulation Results.PNG)
+![Simulation Results](images/Simulation_Results.PNG)
 
 ## Synthesis Utilization
 The design has been synthesized to analyze logic block and register resource consumption. 
