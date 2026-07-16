@@ -26,5 +26,8 @@ input [31:0] read_add,
 output [31:0] instruction
     );
     reg [31:0] memory [0:1023];
+    initial begin
+        $readmemh("program.mem",memory);
+    end
     assign instruction = memory[read_add >> 2];
 endmodule
