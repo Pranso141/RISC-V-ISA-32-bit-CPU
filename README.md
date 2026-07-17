@@ -12,7 +12,7 @@ The core has been successfully synthesized and routed for two distinct hardware 
 ##  Key Technical Achievements
 
 ### 1. Robust ASIC Physical Design (Sky130)
-* **End-to-End Open-Source Flow:** Successfully navigated the OpenLane flow—including Yosys (Synthesis), RePlace (Global Placement), OpenDP (Detailed Placement), TritonCTS (Clock Tree Synthesis), and TritonRoute (Detailed Routing).
+* **End-to-End Open-Source Flow:** Successfully navigated the OpenLane flow, including Yosys (Synthesis), RePlace (Global Placement), OpenDP (Detailed Placement), TritonCTS (Clock Tree Synthesis), and TritonRoute (Detailed Routing).
 * **Custom Hard Macro Integration:** Engineered the floorplan to integrate two distinct SRAM hard macros for the Instruction Memory (`inst_ram_block`) and Data Memory (`data_ram_block`). These macros were strategically placed to minimize routing congestion across the central standard-cell logic cloud.
 * **EDA Toolchain Resiliency:** Engineered a bypass for a critical Magic DRC/LEF stream-out dependency failure. The flow was manually overridden to preserve the optimized TritonRoute database (ODB/DEF) and execute the final GDSII stream-out natively via KLayout, ensuring zero data loss.
 
