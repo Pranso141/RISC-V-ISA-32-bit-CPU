@@ -2,6 +2,27 @@
 
 **Author:** Pranav Sapkale
 
+## Index
+1. [Overview](#overview)
+2. [Supported Instruction Set Architecture (RV32I)](#supported-instruction-set-architecture-rv32i)
+3. [Hardware Architecture & Datapath](#hardware-architecture--datapath)
+   - [RTL Schematic](#rtl-schematic)
+   - [Module Breakdown](#module-breakdown)
+4. [Memory Subsystem — SRAM Macro Integration](#memory-subsystem--sram-macro-integration)
+5. [Physical Design Flow (RTL → GDSII)](#physical-design-flow-rtl--gdsii)
+   - [Toolchain & Environment](#toolchain--environment)
+   - [Flow Stages](#flow-stages)
+   - [Key Configuration Choices (config.json)](#key-configuration-choices-configjson)
+6. [Results](#results-extracted-directly-from-the-physical-design-run)
+7. [GDSII — Final Silicon Layout](#gdsii--final-silicon-layout)
+   - [Die-Level View](#die-level-view)
+   - [SRAM Macro Placement (Silicon Level)](#sram-macro-placement-silicon-level)
+   - [GDS Export Notes](#gds-export-notes)
+8. [Visualization](#visualization)
+9. [Verification & Simulation](#verification--simulation)
+10. [Synthesis Utilization](#synthesis-utilization)
+11. [Future Roadmap](#future-roadmap)
+
 ## Overview
 This repository contains the complete RTL-to-GDSII implementation of a 32-bit single-cycle RISC-V processor core, built on the base integer instruction set (RV32I) and carried all the way from Verilog RTL through an open-source physical design flow to a routed, DRC-clean silicon layout on the SkyWater Sky130 130nm process.
 
