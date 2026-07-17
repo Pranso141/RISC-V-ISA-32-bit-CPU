@@ -1,59 +1,39 @@
-# RISC-V RV32I Single-Cycle Processor
+# 32-bit Single-Cycle RISC-V Core: Full-Stack RTL to GDSII & FPGA Implementation
 
-**Author:** Pranav Sapkale  
-## Overview
-This repository contains the RTL (Register Transfer Level) implementation of a 32-bit single-cycle RISC-V processor core written in Verilog. It implements the base integer instruction set (RV32I) and is designed as a foundational architectural project, bridging the gap between digital logic theory and VLSI engineering. 
+**Author:** Pranav Sapkale 
 
-The current design executes one instruction per clock cycle, featuring a comprehensive datapath with dedicated control logic, arithmetic processing, and memory interfacing. This single-cycle core serves as the "Golden Reference Model" for a future transition into a fully functional 5-stage pipelined architecture targeted for ASIC synthesis via OpenLane/OpenROAD.
+## Project Overview
+This repository contains the complete architectural development and physical implementation of a 32-bit single-cycle RISC-V processor. Built upon the RV32I base integer instruction set, this project bridges the gap between digital logic design and physical silicon fabrication. 
 
-## Supported Instruction Set Architecture (RV32I)
-The processor supports a robust subset of the RISC-V RV32I unprivileged ISA:
+The core has been successfully synthesized and routed for two distinct hardware targets:
+1. **Application-Specific Integrated Circuit (ASIC):** Full RTL-to-GDSII flow using the open-source OpenLane EDA toolchain targeting the SkyWater 130nm (Sky130) Process Design Kit (PDK).
+2. **Field-Programmable Gate Array (FPGA):** Highly optimized logic synthesis and implementation using Xilinx Vivado.
 
-*   **R-Type (Register-Register):** `add`, `sub`, `sll`, `slt`, `sltu`, `xor`, `srl`, `sra`, `or`, `and`
-*   **I-Type (Immediate):** `addi`, `slli`, `slti`, `sltiu`, `xori`, `srli`, `srai`, `ori`, `andi`
-*   **Memory Operations (Loads/Stores):** `lw`, `lh`, `lhu`, `lb`, `lbu`, `sw`, `sh`, `sb`
-*   **B-Type (Branches):** `beq`, `bne`, `blt`, `bge`, `bltu`, `bgeu`
-*   **J-Type (Jumps):** `jal`, `jalr`
-*   **U-Type (Upper Immediate):** `lui`, `auipc`
+##  Key Technical Achievements
 
-## Hardware Architecture & Datapath
-The top-level module (`top_module.v`) connects the individual functional blocks into a unified single-cycle datapath[cite: 11]. Data and control signals propagate combinationally through the modules within a single clock period, updating architectural state (Registers and Data Memory) on the rising clock edge.
+### 1. Robust ASIC Physical Design (Sky130)
+* **End-to-End Open-Source Flow:** Successfully navigated the OpenLane flow—including Yosys (Synthesis), RePlace (Global Placement), OpenDP (Detailed Placement), TritonCTS (Clock Tree Synthesis), and TritonRoute (Detailed Routing).
+* **Custom Hard Macro Integration:** Engineered the floorplan to integrate two distinct SRAM hard macros for the Instruction Memory (`inst_ram_block`) and Data Memory (`data_ram_block`). These macros were strategically placed to minimize routing congestion across the central standard-cell logic cloud.
+* **EDA Toolchain Resiliency:** Engineered a bypass for a critical Magic DRC/LEF stream-out dependency failure. The flow was manually overridden to preserve the optimized TritonRoute database (ODB/DEF) and execute the final GDSII stream-out natively via KLayout, ensuring zero data loss.
 
-### RTL Schematic
-Below is the generated schematic of the single-cycle datapath:
+### 2. Ultra-Efficient FPGA Implementation
+The processor architecture was deeply optimized at the RTL level to reduce logic gate depth and area overhead, resulting in an exceptionally lightweight footprint:
+* **Logic Utilization:** Achieved a highly dense synthesis requiring only 744 Look-Up Tables (LUTs), utilizing a mere 3.58% of available resources. 
+* **Sequential Elements:** Required only 166 Flip-Flops (FFs), representing 0.40% utilization.
+* **Memory Efficiency:** Mapped memory structures to 512 LUTRAMs (5.33% utilization).
+* **Thermal & Power Optimization:** The implemented core operates with an ultra-low total on-chip power consumption of just 0.137 W, maintaining a stable junction temperature of 25.7 °C with a thermal margin of 59.3 °C.
 
-![RTL Schematic](Images/Schematic.PNG)
+### 3. Advanced Layout Visualization and Topography
+To support rigorous academic documentation, the physical layout was processed to generate publication-ready die shots.
+* **Native ODB Extraction:** Bypassed KLayout `.lyp` mapping discrepancies by loading the `.odb` database natively into the OpenROAD GUI.
+* **PDN and Grid Stripping:** Generated high-contrast layout visuals by isolating the dense signal routing from the Power Distribution Network (VDD/GND mesh) and the standard-cell manufacturing grid. 
+* **3D Extrusion:** Processed GDSII layer definitions to generate 3D STL meshes of the Sky130 metal routing stack for advanced visual topography.
 
-### Module Breakdown
-*   **`top_module.v`**: The structural wrapper that instantiates and wires all datapath components and control lines together.
-*   **`CU.v` (Control Unit)**: The main decoder that takes the 7-bit instruction opcode and generates all primary multiplexer selects, memory enable flags, and execution unit signals.
-*   **`pc.v` (Program Counter)**: A synchronous 32-bit register holding the current execution address.
-*   **`instrct_mem.v`**: A 1024x32 instruction memory array accessed combinationally via the Program Counter.
-*   **`reg_file.v`**: A 32x32-bit integer register file. It supports two concurrent asynchronous reads and one synchronous write on the positive clock edge. Register `x0` is hardwired to zero.
-*   **`imm_gen.v`**: Extracts and sign-extends immediate values from the 32-bit instruction based on the opcode format (I, S, B, U, J).
-*   **`ALU.v`**: The Arithmetic Logic Unit executing additions, subtractions, bitwise logic, and shifts (logical and arithmetic). It outputs zero and less-than flags for branch evaluation.
-*   **`ALUCU.v` (ALU Control)**: A secondary control decoder that takes the main `alu_op` signal alongside the instruction's `funct3` and `funct7` (bit 30) fields to dictate the precise ALU operation (e.g., distinguishing between arithmetic and logical right shifts).
-*   **`branch_unit.v`**: Evaluates branch conditions (`funct3`) against ALU flags (`alu_zero`, `alu_lt`, `alu_ltu`) and jump signals to assert the `pc_src` flag, redirecting the Program Counter if a branch is taken.
-*   **`data_mem.v`**: A 1024x32 data memory array handling precise byte (`sb`/`lb`), half-word (`sh`/`lh`), and word (`sw`/`lw`) alignments and sign-extensions for memory instructions.
-*   **`adder.v`**: Reusable 32-bit arithmetic adders used for incrementing `PC+4` and calculating branch target addresses.
-*   **`wb_mux.v` & `small_mux.v`**: Datapath routing multiplexers for ALU operands, write-back data, and PC next-state selection.
+##  Tools & Technologies Used
+* **Hardware Description Language:** Verilog
+* **ASIC Toolchain:** OpenLane, Yosys, OpenROAD, KLayout
+* **Process Node:** SkyWater 130nm (Sky130 PDK)
+* **FPGA Toolchain:** Xilinx Vivado
 
-## Verification & Simulation
-The processor's functionality has been verified using a self-checking testbench to ensure proper instruction decoding, arithmetic execution, and memory read/writes.
-
-Below are the simulation waveforms demonstrating correct execution:
-
-![Simulation Results](Images/Simulation_Results.PNG)
-
-## Synthesis Utilization
-The design has been synthesized to analyze logic block and register resource consumption. 
-
-Below is the utilization report for the single-cycle implementation:
-
-![Resource Utilization](Images/Utilization.PNG)
-
-## Future Roadmap
-This single-cycle implementation is phase one of a larger VLSI development cycle. Upcoming milestones include:
-1.  **Pipelining:** Transformation into a 5-stage (IF, ID, EX, MEM, WB) pipelined architecture.
-2.  **Hazard Mitigation:** Implementation of forwarding logic and load-use hazard detection units.
-3.  **Synthesis Preparation:** Replacing inferred memory arrays with ASIC-compatible SRAM macros for physical design utilizing OpenLane/OpenROAD.
+##  Documentation
+For a deep dive into the physical design methodology, toolchain configurations, and synthesis reports, please wait for the published paper.
