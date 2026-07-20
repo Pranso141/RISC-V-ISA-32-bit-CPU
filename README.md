@@ -129,7 +129,7 @@ Two additional flags carried through from the macro-integration work govern how 
 The flow terminates in a full GDSII stream-out of the routed design — the actual polygon-level geometry that would be handed to a foundry for fabrication. This is the artifact that separates this project from a purely RTL/FPGA exercise: every cell, macro, and wire below has real, DRC-checked physical geometry on the Sky130 process.
 
 ### Die-Level View
-![Full-Chip GDSII Layout](Images/GDSII_Full_Die.PNG)
+![Full-Chip GDSII Layout](Images/GDS_Layout.png)
 
 *   **File:** `top_module.gds`, viewed in **KLayout 0.30.7**.
 *   **Die area:** 1500 x 1500 µm (absolute), **core area:** 1480 x 1480 µm, per the `DIE_AREA`/`CORE_AREA` settings in `config.json`.
@@ -139,7 +139,7 @@ The flow terminates in a full GDSII stream-out of the routed design — the actu
 *   No DRC violation markers are present in this view; the geometry shown is what streamed out cleanly after detailed routing.
 
 ### SRAM Macro Placement (Silicon Level)
-![SRAM Macro Placement in Final Layout](Images/GDSII_SRAM_Macros.PNG)
+![SRAM Macro Placement in Final Layout](Images/iamge.png)
 
 *   Close-up of the die's lower edge showing the two integrated SRAM hard macros: **`insmem.inst_ram_block`** (instruction memory, right) and **`datamem.data_ram_block`** (data memory, left), each a `sky130_sram_1kbyte_1rw1r_32x256_8` macro dropped in directly from its OpenRAM-generated `.gds`.
 *   The pink/pill-colored regions are the macro boundary outlines pulled from each macro's `.lef` abstract; the dense red/magenta vertical routing between the two macros is the shared address/control/power interconnect stitched across both blocks.
